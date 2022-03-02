@@ -4,11 +4,13 @@ const rename = require('gulp-rename');
 const minifyJs = require('gulp-minify');
 var browserSync = require('browser-sync').create();
 const reload = browserSync.reload;
+const sass = require('gulp-sass')(require('sass'));
+sass.compiler = require('node-sass');
 
 
-function cssTask() {
-  return gulp.src('src/*.css')
-    .pipe(minify())
+function scssTask() {
+  return gulp.src('src/*.scss')
+    .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
     .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest('dist'));
 }
@@ -26,11 +28,11 @@ function watch() {
     }
   });
 
-  gulp.watch('src/*.css', cssTask).on('change', reload);
+  gulp.watch('src/*.scss', scssTask).on('change', reload);
   gulp.watch('src/*.js', jsTask).on('change', reload);
   gulp.watch("./*.html").on('change', reload);
 }
 
-exports.cssTask = cssTask;
+exports.scssTask = scssTask;
 exports.jsTask = jsTask;
 exports.watch = watch;
